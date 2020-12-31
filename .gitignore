@@ -1,0 +1,101 @@
+#*********************************************************************
+#
+#   NAME:
+#       .gitignore
+#
+#   DESCRIPTION:
+#       This file specifies intentionally untracked files that Git
+#       should ignore.
+#
+#   NOTES:
+#       http://www.kernel.org/pub/software/scm/git/docs/gitignore.html
+#
+#       Shell glob documentation:
+#           http://man7.org/linux/man-pages/man7/glob.7.html
+#
+#   PLEASE KEEP ENTRIES IN ALPHABETICAL ORDER WITHIN EACH SECTION
+#
+#*********************************************************************
+
+#---------------------------------------------------------------------
+# File extensions to be ignored anywhere in the tree
+#---------------------------------------------------------------------
+# Temp files created by many text editors
+*~
+# JavaScript and Map files. These should always be rebuilt
+*.js
+*.js.map
+# Log files
+*.log
+# Merge files created by Git
+*.orig
+# Temporary files
+*.tmp
+*.tmp.*
+*.temp
+# Allow the webpack config
+!dev/test/webpack.config.js
+
+#---------------------------------------------------------------------
+# Output for build
+#---------------------------------------------------------------------
+dist/
+
+#---------------------------------------------------------------------
+# Node Modules
+# Can be installed from package.json using "yarn install"
+#---------------------------------------------------------------------
+node_modules/
+
+#---------------------------------------------------------------------
+# Coverage Information
+# Will be created after running tests for coverage with "yarn coverage"
+#---------------------------------------------------------------------
+coverage/
+.nyc_output/
+
+#---------------------------------------------------------------------
+# NPM's package lock file. We are currently using Yarn's lock file,
+# and all our automated build processes invoke Yarn. We don't want to
+# support both as this forces us to have to ensure they stay in sync.
+#---------------------------------------------------------------------
+package-lock.json
+
+#---------------------------------------------------------------------
+# IDE specific files and directories
+#---------------------------------------------------------------------
+
+# IntelliJ project settings
+.idea/
+
+# VS Code settings
+.vscode/
+
+# VS Code workspace
+*.code-workspace
+
+# Ideally, all the Visual Studio files could be in a sub-directory called
+# "vs", but I haven't been able to make that work yet. We'll ingnore the
+# directory in case it ever can be used, but also the files and extensions
+# that should be in it.
+vs/
+.ntvs_analysis.dat
+*.njsproj
+*.sln
+
+# Visual Studio User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Build Results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/

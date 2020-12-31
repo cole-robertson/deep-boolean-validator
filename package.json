@@ -1,0 +1,72 @@
+{
+  "name": "deep-boolean-validator",
+  "author": "Cole Robertson",
+  "friendlyName": "Validator",
+  "version": "1.0.0",
+  "description": "Generic deep boolean validator with several abstractions",
+  "license": "MIT",
+  "repository": "https://github.com/cole-robertson/deep-boolean-validator.git",
+  "main": "dist/src/index.js",
+  "engines": {
+    "node": ">=10.13.*"
+  },
+  "files": [
+    "dist/src"
+  ],
+  "typings": "dist/src/index.d.ts",
+  "devDependencies": {
+    "@types/chai": "^4.1.2",
+    "@types/mocha": "^8.0.0",
+    "@types/node": "10.*",
+    "chai": "^4.1.1",
+    "husky": "^4.2.5",
+    "mocha": "^8.0.1",
+    "mocha-clean": "^1.0.0",
+    "nyc": "^15.0.0",
+    "prettier": "^2.0.5",
+    "pretty-quick": "^2.0.1",
+    "source-map-support": "^0.5.10",
+    "ts-node": "^8.0.1",
+    "typescript": "^3.6.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged",
+      "pre-push": "yarn coverage"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "yarn clean:dist && yarn clean:coverage",
+    "clean:dist": "rm -rf dist",
+    "clean:coverage": "rm -rf coverage .nyc_output/",
+    "coverage": "yarn build && nyc mocha --require ts-node/register dev/test/**/*.ts",
+    "setup": "yarn install",
+    "test": "yarn build && yarn test:mocha",
+    "test:mocha": "mocha dist/test/**/*.js",
+    "prettier": "prettier --write {*,dev/**/*,scripts/**/*}.{js,ts,tsx,json,yaml,md,scss}"
+  },
+  "mocha": {
+    "require": [
+      "mocha-clean",
+      "source-map-support/register"
+    ],
+    "reporter": "spec",
+    "timeout": 20000,
+    "exit": true,
+    "recursive": true
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "reporter": [
+      "html",
+      "text"
+    ],
+    "include": [
+      "dev/src/**/*.ts"
+    ],
+    "all": true
+  }
+}
