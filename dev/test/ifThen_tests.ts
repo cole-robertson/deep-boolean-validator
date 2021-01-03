@@ -39,13 +39,13 @@ describe("If-Then", () => {
   };
 
   const validateComparisonsWrapper = (testGroup: TestGroup) =>
-    validateComparisons({
+    validateComparisons<TestGroup, TestCondition, {}>({
       booleanOperatorGetter: (group) => group.operator,
       childGroupGetter: (group) => group.childGroups,
       comparatorGetter: (item: TestCondition) => item.comparator,
-      getOperandValues: (item) => ({
-        operand1Value: item.operand1,
-        operand2Value: item.operand2,
+      getOperands: (item) => ({
+        actual: item.operand1,
+        expected: item.operand2,
       }),
       group: testGroup,
       itemsGetter: (group) => group.items,

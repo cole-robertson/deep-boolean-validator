@@ -21,20 +21,24 @@ interface TestGroup {
 
 describe("Comparator", () => {
   const validateComparisonsWrapper = (testGroup: TestGroup) =>
-    validateComparisons({
+    validateComparisons<
+      TestGroup,
+      TestCondition,
+      { errorMessage: string | undefined }
+    >({
       booleanOperatorGetter: (group) => group.operator,
       childGroupGetter: (group) => group.childGroups,
       comparatorGetter: (item: TestCondition) => item.comparator,
-      getOperandValues: (item) => ({
-        operand1Value: item.operand1,
-        operand2Value: item.operand2,
+      getOperands: (item: TestCondition) => ({
+        actual: item.operand1,
+        expected: item.operand2,
       }),
       group: testGroup,
       itemsGetter: (group) => group.items,
-      responsePropsGetter: ({ success, comparator, operand1, operand2 }) => {
+      responsePropsGetter: ({ success, comparator, actual, expected }) => {
         let errorMessage;
         if (!success) {
-          errorMessage = `${operand1} does not satisfy the condition ${comparator} ${operand2}`;
+          errorMessage = `${actual} does not satisfy the condition ${comparator} ${expected}`;
         }
         return { errorMessage };
       },

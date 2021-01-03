@@ -12,8 +12,8 @@ export interface PropsGetterParams<ItemType> {
   success: boolean;
   comparator: Comparator;
   item: ItemType;
-  operand1: unknown;
-  operand2: unknown;
+  actual: unknown;
+  expected: unknown;
 }
 
 export interface ComparatorExtension<GroupType, ItemType, ResponseType>
@@ -22,9 +22,9 @@ export interface ComparatorExtension<GroupType, ItemType, ResponseType>
     "validateItem"
   > {
   comparatorGetter: (item: ItemType) => Comparator;
-  getOperandValues: (
+  getOperands: (
     item: ItemType
-  ) => AsyncFuncResult<{ operand1Value: unknown; operand2Value: unknown }>;
+  ) => AsyncFuncResult<{ actual: unknown; expected: unknown }>;
   responsePropsGetter?: (params: PropsGetterParams<ItemType>) => ResponseType;
 }
 
@@ -78,27 +78,47 @@ export const validateComparisons = async <GroupType, ItemType, ResponseType>(
 ): Promise<GroupItemResponse<GroupType, ResponseType>> => {
   const {
     comparatorGetter,
-    getOperandValues: getOperands,
+    getOperands,
+    responsePropsGetter,
     ...validatorParams
   } = params;
   return await validateGroups({
     ...validatorParams,
-    validateItem: async (item) => {
-      const comparator = comparatorGetter(item);
-      const {
-        operand1Value: operand1,
-        operand2Value: operand2,
-      } = await getOperands(item);
-      const res = validateComparison(comparator, operand1, operand2);
-      const responseProps =
-        params.responsePropsGetter?.({
-          success: res,
-          comparator,
-          item,
-          operand1,
-          operand2,
-        }) || ({} as ResponseType);
-      return { ...responseProps, valid: res };
-    },
+    validateItem: (item) =>
+      validateItemComparison({
+        responsePropsGetter,
+        getOperands,
+        comparatorGetter,
+        item,
+      }),
   });
+};
+
+export interface ValidateItemComparisons<ItemType, ResponseType> {
+  item: ItemType;
+  comparatorGetter: (item: ItemType) => Comparator;
+  getOperands: (
+    item: ItemType
+  ) => AsyncFuncResult<{ actual: unknown; expected: unknown }>;
+  responsePropsGetter?: (params: PropsGetterParams<ItemType>) => ResponseType;
+}
+
+export const validateItemComparison = async <ItemType, ResponseType>({
+  comparatorGetter,
+  getOperands,
+  item,
+  responsePropsGetter,
+}: ValidateItemComparisons<ItemType, ResponseType>) => {
+  const comparator = comparatorGetter(item);
+  const { actual, expected } = await getOperands(item);
+  const res = validateComparison(comparator, actual, expected);
+  const responseProps =
+    responsePropsGetter?.({
+      success: res,
+      comparator,
+      item,
+      actual,
+      expected,
+    }) || ({} as ResponseType);
+  return { ...responseProps, valid: res };
 };

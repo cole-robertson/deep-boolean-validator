@@ -1,13 +1,17 @@
 import { Comparator, PropsGetterParams } from "./comparator";
-import { BooleanOperator, ValidationResponse, GroupItemResponse } from "./types";
+import {
+  BooleanOperator,
+  ValidationResponse,
+  GroupItemResponse,
+} from "./types";
 
 export type Id = number | string;
 
 export interface DetailedResponseParams<ItemType> {
-  getOperandIds: (item: ItemType) => { operand1Id: Id; operand2Id?: Id };
+  getOperandIds: (item: ItemType) => { actualId: Id; expectedId?: Id };
   getOperandDisplayNames: (
     items: ItemType
-  ) => { operand1Name: string; operand2Name: string };
+  ) => { actualName: string; expectedName: string };
 }
 
 type DetailedErrorParams<ItemType> = DetailedResponseParams<ItemType> &
@@ -38,23 +42,23 @@ export const getTranslatedComparator = (comparator: Comparator) => {
 
 interface HumanReadableParams {
   comparator: Comparator;
-  operand1Name: string;
-  operand2Name: string;
+  actualName: string;
+  expectedName: string;
   overrideTranslation?: (comparator: Comparator) => string;
   useNegative?: boolean;
 }
 
 export const getHumanReadableMessage = ({
   comparator,
-  operand1Name,
-  operand2Name,
+  actualName,
+  expectedName,
   overrideTranslation,
   useNegative,
 }: HumanReadableParams) => {
   const translatedOperator =
     overrideTranslation?.(comparator) || getTranslatedComparator(comparator);
   const negative = useNegative ? "NOT" : "";
-  return `${operand1Name} is ${negative} ${translatedOperator} ${operand2Name}`;
+  return `${actualName} is ${negative} ${translatedOperator} ${expectedName}`;
 };
 
 interface OperandInfo {
@@ -77,21 +81,21 @@ export const getDetailedError = <ItemType>({
   getOperandDisplayNames,
   getOperandIds,
   item,
-  operand1: operand1Value,
-  operand2: operand2Value,
+  actual,
+  expected,
 }: DetailedErrorParams<ItemType>): DetailedResponse<ItemType> => {
   let errorMessage;
-  const { operand1Id, operand2Id } = getOperandIds(item);
-  const { operand1Name, operand2Name } = getOperandDisplayNames(item);
+  const { actualId, expectedId } = getOperandIds(item);
+  const { actualName, expectedName } = getOperandDisplayNames(item);
   const operand1: OperandInfo = {
-    id: operand1Id,
-    name: operand1Name,
-    value: operand1Value,
+    id: actualId,
+    name: actualName,
+    value: actual,
   };
   const operand2: OperandInfo = {
-    id: operand2Id,
-    name: operand2Name,
-    value: operand2Value,
+    id: expectedId,
+    name: expectedName,
+    value: expected,
   };
   if (!success) {
     let overrideTranslation;
@@ -103,8 +107,8 @@ export const getDetailedError = <ItemType>({
 
     errorMessage = getHumanReadableMessage({
       comparator,
-      operand1Name,
-      operand2Name,
+      actualName,
+      expectedName,
       overrideTranslation,
       useNegative,
     });
