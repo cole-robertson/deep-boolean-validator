@@ -68,5 +68,9 @@
       "dev/src/**/*.ts"
     ],
     "all": true
+  },
+  "dependencies": {
+    "@types/lodash.isequal": "^4.5.5",
+    "lodash.isequal": "^4.5.0"
   }
 }

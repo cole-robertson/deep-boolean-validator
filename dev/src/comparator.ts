@@ -1,5 +1,6 @@
 import { validateGroups } from ".";
 import { BooleanValidator, AsyncFuncResult, GroupItemResponse } from "./types";
+var isEqual = require("lodash.isequal");
 
 export type Comparator = "==" | "!=" | ">" | ">=" | "<" | "<=";
 
@@ -29,7 +30,7 @@ export interface ComparatorExtension<GroupType, ItemType, ResponseType>
 }
 
 export const isEqualTo = (operand1: unknown, operand2: unknown) =>
-  operand1 === operand2;
+  isEqual(operand1, operand2);
 
 export const isNotEqualTo = (operand1: unknown, operand2: unknown) =>
   !isEqualTo(operand1, operand2);
