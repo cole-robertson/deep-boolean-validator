@@ -50,6 +50,20 @@ describe("Comparator", () => {
         expect(validateComparison("==", 1, 1)).to.be.true);
       it("shall return false if A !== B", () =>
         expect(validateComparison("==", 1, 2)).to.be.false);
+      it("shall return true for equal objects", () => {
+        expect(validateComparison("==", { hello: "world" }, { hello: "world" }))
+          .to.be.true;
+      });
+      it("shall return false for NOT equal objects", () => {
+        expect(validateComparison("==", { hello: "world" }, { hello: "space" }))
+          .to.be.false;
+      });
+      it("shall return true for equal arrays", () => {
+        expect(validateComparison("==", [1, 2], [1, 2])).to.be.true;
+      });
+      it("shall return false for NOT equal arrays", () => {
+        expect(validateComparison("==", [1, 2], [1, 3])).to.be.false;
+      });
     });
 
     describe("shall evaluate '!= correctly'", () => {
@@ -57,6 +71,20 @@ describe("Comparator", () => {
         expect(validateComparison("!=", 1, 2)).to.be.true);
       it("shall return false if A === B", () =>
         expect(validateComparison("!=", 1, 1)).to.be.false);
+      it("shall return true for NOT equal objects", () => {
+        expect(validateComparison("!=", { hello: "world" }, { hello: "space" }))
+          .to.be.true;
+      });
+      it("shall return false for equal objects", () => {
+        expect(validateComparison("!=", { hello: "world" }, { hello: "world" }))
+          .to.be.false;
+      });
+      it("shall return true for NOT equal arrays", () => {
+        expect(validateComparison("!=", [1, 2], [1, 3])).to.be.true;
+      });
+      it("shall return false for equal arrays", () => {
+        expect(validateComparison("!=", [1, 2], [1, 2])).to.be.false;
+      });
     });
 
     describe("shall evaluate '>' correctly ", () => {
